@@ -20,7 +20,7 @@
 #endif
 
 forward OnDialogReceived(playerid, dialogid);
-forward OnDialogPerformed(playerid, dialogid, listitem, inputtext);
+forward OnDialogPerformed(playerid, dialogid, response);
 
 new buffer[15];
 
@@ -50,9 +50,6 @@ public OnGameModeInit()
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-    #if defined OnDialogPerformed
-    CallRemoteFunction("OnDialogPerformed", "id", playerid,  dialogid, listitem, inputtext);
-    #endif
     format(buffer, sizeof buffer, "dlgnm%d", dialogid); 
     if(isnull(inputtext)) CallLocalFunction(buffer, "ddd", playerid, response, listitem);
     else CallLocalFunction(buffer, "ddds", playerid, response, listitem, inputtext);
@@ -79,9 +76,9 @@ stock kdlg_ShowPlayerDialog(playerid, dialogid, style, caption[], info[], button
     if(!CallRemoteFunction("OnDialogReceived", "id", playerid, dialogid)) return 0;
     #endif
     ShowPlayerDialog(playerid, dialogid, style, caption, info, button1, button2);
-    /*#if defined OnDialogPerformed
-    CallRemoteFunction("OnDialogPerformed", "id", playerid,  dialogid, listitem, inputtext);
-    #endif*/
+    #if defined OnDialogPerformed
+    CallRemoteFunction("OnDialogPerformed", "id", playerid,  dialogid, response);
+    #endif
     return 1;
 }
 
