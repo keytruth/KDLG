@@ -20,7 +20,7 @@
 #endif
 
 forward OnDialogReceived(playerid, dialogid);
-forward OnDialogPerformed(playerid, dialogid, response);
+forward OnDialogPerformed(playerid, dialogid);
 
 new buffer[15];
 
@@ -77,7 +77,7 @@ stock kdlg_ShowPlayerDialog(playerid, dialogid, style, caption[], info[], button
     #endif
     ShowPlayerDialog(playerid, dialogid, style, caption, info, button1, button2);
     #if defined OnDialogPerformed
-    CallRemoteFunction("OnDialogPerformed", "id", playerid,  dialogid, response);
+    CallRemoteFunction("OnDialogPerformed", "id", playerid,  dialogid);
     #endif
     return 1;
 }
