@@ -22,7 +22,7 @@
 forward OnDialogReceived(playerid, dialogid);
 forward OnDialogPerformed(playerid, dialogid);
 
-new buffer[15];
+static buffer[15];
 
 public OnGameModeInit()
 {
