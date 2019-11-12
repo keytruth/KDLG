@@ -24,7 +24,7 @@
 forward OnDialogReceived(playerid, dialogid);
 forward OnDialogPerformed(playerid, dialogid);
 
-static buffer[15];
+static buf[16];
 
 public OnGameModeInit()
 {
@@ -52,9 +52,9 @@ public OnGameModeInit()
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-    format(buffer, sizeof buffer, "dlgnm%d", dialogid); 
-    if(isnull(inputtext)) CallLocalFunction(buffer, "ddd", playerid, response, listitem);
-    else CallLocalFunction(buffer, "ddds", playerid, response, listitem, inputtext);
+    format(buf, sizeof buf, "dlgnm%d", dialogid); 
+    if(isnull(inputtext)) CallLocalFunction(buf, "ddd", playerid, response, listitem);
+    else CallLocalFunction(buf, "ddds", playerid, response, listitem, inputtext);
     #if defined kdlg_OnDialogResponse
 	return kdlg_OnDialogResponse(playerid, dialogid, response, listitem, inputtext);
     #else
