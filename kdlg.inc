@@ -15,6 +15,8 @@
 #define dialog(%0,%1,%2,%3,%4) 													DIALOG:%0(%1,%2,%3,%4)
 #define dlg(%0,%1,%2,%3,%4) 													DIALOG:%0(%1,%2,%3,%4)
 
+#define ClosePlayerDialog(%0) ShowPlayerDialog(%0,-1,DIALOG_STYLE_MSGBOX,!" ",!" ",!" ",!" ");
+
 #if !defined isnull
     #define isnull(%1) ((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
 #endif
