@@ -28,7 +28,9 @@ public OnGameModeInit()
     print("KDLG (2.1) successfully loaded!");
     print("Author: keytruth");
     print("=====================================\n\n");
-    return 1;
+    #if defined kdlg_OnGameModeInit
+    return kdlg_OnGameModeInit();
+    #endif
 }
 
 #if defined _ALS_OnGameModeInit
