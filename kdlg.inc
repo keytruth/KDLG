@@ -1,5 +1,5 @@
 // Author: keytruth
-// Version: 1.0 (29.05.2019)
+// Version: 2.1 (13.11.2019)
 
 #if defined _kdlg_included
 	#endinput
@@ -15,28 +15,19 @@
 #define dialog(%0,%1,%2,%3,%4) 													DIALOG:%0(%1,%2,%3,%4)
 #define dlg(%0,%1,%2,%3,%4) 													DIALOG:%0(%1,%2,%3,%4)
 
-#define ClosePlayerDialog(%0) ShowPlayerDialog(%0,-1,DIALOG_STYLE_MSGBOX,!" ",!" ",!" ",!" ");
-
-#if !defined isnull
-    #define isnull(%1) ((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
-#endif
+#define HidePlayerDialog(%0) ShowPlayerDialog(%0,-1,DIALOG_STYLE_MSGBOX,!" ",!" ",!" ",!" ")
 
 forward OnDialogReceived(playerid, dialogid);
-forward OnDialogPerformed(playerid, dialogid);
 
-static buf[16];
+static buf[32],
+	   dlgnm[MAX_PLAYERS][32];
 
 public OnGameModeInit()
 {
     print("\n\n=====================================");
-    print("KDLG (1.0) successfully loaded!");
+    print("KDLG (2.1) successfully loaded!");
     print("Author: keytruth");
     print("=====================================\n\n");
-    new kdlg = 1;
-    #if defined kdlg_OnGameModeInit
-	kdlg = kdlg_OnGameModeInit();
-    #endif
-    #pragma unused kdlg
     return 1;
 }
 
@@ -52,9 +43,7 @@ public OnGameModeInit()
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-    format(buf, sizeof buf, "dlgnm%d", dialogid); 
-    if(isnull(inputtext)) CallLocalFunction(buf, "ddd", playerid, response, listitem);
-    else CallLocalFunction(buf, "ddds", playerid, response, listitem, inputtext);
+    CallLocalFunction(dlgnm[playerid], "ddds", playerid, response, listitem, (inputtext[0] == EOS) ? ("\1") : (inputtext));
     #if defined kdlg_OnDialogResponse
 	return kdlg_OnDialogResponse(playerid, dialogid, response, listitem, inputtext);
     #else
@@ -72,16 +61,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	forward kdlg_OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]);
 #endif
 
-stock kdlg_ShowPlayerDialog(playerid, dialogid, style, caption[], info[], button1[], button2[])
+stock kdlg_ShowPlayerDialog(playerid, dialog[], style, caption[], info[], button1[], button2[])
 {
     #if defined OnDialogReceived
-    if(!CallRemoteFunction("OnDialogReceived", "id", playerid, dialogid)) return 0;
+    if(!CallLocalFunction("OnDialogReceived", "id", playerid, funcidx(dialog))) return 0;
     #endif
-    ShowPlayerDialog(playerid, dialogid, style, caption, info, button1, button2);
-    #if defined OnDialogPerformed
-    CallRemoteFunction("OnDialogPerformed", "id", playerid,  dialogid);
-    #endif
-    return 1;
+    format(buf, sizeof buf, "dlgnm%s", dialog), format(dlgnm[playerid], 32, buf);
+    return ShowPlayerDialog(playerid, funcidx(buf), style, caption, info, button1, button2);
 }
 
 #if defined _ALS_ShowPlayerDialog
@@ -89,4 +75,4 @@ stock kdlg_ShowPlayerDialog(playerid, dialogid, style, caption[], info[], button
 #else
 	#define _ALS_ShowPlayerDialog
 #endif
-#define ShowPlayerDialog kdlg_ShowPlayerDialog
+#define ShowPlayerDialog(%0,%1,%2) kdlg_ShowPlayerDialog(%0,#%1,%2)
